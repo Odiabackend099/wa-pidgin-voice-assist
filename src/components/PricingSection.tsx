@@ -83,6 +83,16 @@ const pricingPlans: PricingPlan[] = [
   }
 ];
 
+const handlePlanSelection = (plan: PricingPlan) => {
+  if (plan.name === 'Free Trial') {
+    // Navigate to registration
+    window.location.href = '/register';
+  } else {
+    // Navigate to payment
+    window.location.href = `/payment?plan=${plan.name.toLowerCase().replace(' ', '-')}`;
+  }
+};
+
 const PricingSection = () => {
   return (
     <section className="py-20 bg-background">
@@ -140,6 +150,7 @@ const PricingSection = () => {
                 variant={plan.variant}
                 className="w-full"
                 size="lg"
+                onClick={() => handlePlanSelection(plan)}
               >
                 {plan.name === 'Free Trial' ? 'Start Free Trial' : 'Get Started'}
               </Button>

@@ -140,7 +140,11 @@ const WhatsAppQR = () => {
                     Your WhatsApp Business is now powered by OdiaBiz AI. You can start receiving and responding to customer messages automatically.
                   </p>
                   
-                  <Button variant="default" className="mt-4 w-full">
+                  <Button 
+                    variant="default" 
+                    className="mt-4 w-full"
+                    onClick={() => window.location.href = '/dashboard'}
+                  >
                     View Dashboard
                     <ArrowRight className="w-4 h-4" />
                   </Button>
