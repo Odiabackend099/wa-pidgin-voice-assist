@@ -14,13 +14,77 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      conversations: {
+        Row: {
+          ai_response: string
+          created_at: string | null
+          id: string
+          user_id: string | null
+          user_message: string
+        }
+        Insert: {
+          ai_response: string
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+          user_message: string
+        }
+        Update: {
+          ai_response?: string
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+          user_message?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      users: {
+        Row: {
+          business_name: string
+          created_at: string | null
+          id: string
+          language_pref: string | null
+          plan: string | null
+          trial_remaining: number | null
+          whatsapp_number: string
+        }
+        Insert: {
+          business_name: string
+          created_at?: string | null
+          id?: string
+          language_pref?: string | null
+          plan?: string | null
+          trial_remaining?: number | null
+          whatsapp_number: string
+        }
+        Update: {
+          business_name?: string
+          created_at?: string | null
+          id?: string
+          language_pref?: string | null
+          plan?: string | null
+          trial_remaining?: number | null
+          whatsapp_number?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      deduct_trial_credit: {
+        Args: { credit_amount?: number; user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
