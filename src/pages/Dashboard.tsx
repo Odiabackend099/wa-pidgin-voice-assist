@@ -75,7 +75,11 @@ const PlanStatus = ({ user }: { user: User | null }) => {
         </p>
       </div>
       {user.plan === 'trial' && (
-        <Button>Upgrade Plan</Button>
+        <Button 
+          onClick={() => alert('Upgrade feature coming soon! Contact: +234 800 ODIABIZ')}
+        >
+          Upgrade Plan
+        </Button>
       )}
     </div>
   );
@@ -234,7 +238,10 @@ const Dashboard = () => {
                 <Bell className="w-4 h-4" />
               </Button>
               <span className="text-sm text-muted-foreground">Welcome, {user?.business_name}</span>
-              <Button size="sm">
+              <Button 
+                size="sm"
+                onClick={() => alert('Upgrade feature coming soon! Contact: +234 800 ODIABIZ')}
+              >
                 Upgrade Plan
               </Button>
             </div>
@@ -289,11 +296,19 @@ const Dashboard = () => {
                   className="w-64 pl-10"
                 />
               </div>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => alert('Filter feature coming soon!')}
+              >
                 <Filter className="w-4 h-4 mr-2" />
                 Filter
               </Button>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => alert('Export feature coming soon!')}
+              >
                 <Download className="w-4 h-4 mr-2" />
                 Export
               </Button>

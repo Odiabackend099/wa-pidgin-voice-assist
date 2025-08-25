@@ -180,7 +180,13 @@ const LaunchReadiness = () => {
           <Button 
             size="lg" 
             disabled={completedChecks < checks.length}
-            onClick={() => window.open('/register', '_blank')}
+            onClick={() => {
+              if (completedChecks === checks.length) {
+                window.open('/register', '_blank');
+              } else {
+                alert(`System not ready yet. ${checks.length - completedChecks} items remaining.`);
+              }
+            }}
           >
             {completedChecks === checks.length ? '🚀 Launch MVP' : `${completedChecks}/${checks.length} Ready`}
           </Button>
