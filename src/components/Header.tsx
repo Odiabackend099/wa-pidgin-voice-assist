@@ -12,6 +12,14 @@ const Header = () => {
     { name: 'Support', href: '#support' }
   ];
 
+  const handleNavClick = (href: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="container mx-auto px-4">
@@ -30,7 +38,8 @@ const Header = () => {
               <a
                 key={item.name}
                 href={item.href}
-                className="text-muted-foreground hover:text-primary transition-smooth"
+                className="text-muted-foreground hover:text-primary transition-smooth cursor-pointer"
+                onClick={(e) => handleNavClick(item.href, e)}
               >
                 {item.name}
               </a>
@@ -39,11 +48,17 @@ const Header = () => {
 
           {/* Right Actions */}
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="ghost">
+            <Button 
+              variant="ghost"
+              onClick={() => window.location.href = '/dashboard'}
+            >
               <User className="w-4 h-4" />
               Login
             </Button>
-            <Button variant="cta">
+            <Button 
+              variant="cta"
+              onClick={() => window.location.href = '/register'}
+            >
               Start Free Trial
             </Button>
           </div>
@@ -67,18 +82,28 @@ const Header = () => {
                 <a
                   key={item.name}
                   href={item.href}
-                  className="text-muted-foreground hover:text-primary transition-smooth py-2"
-                  onClick={() => setIsMenuOpen(false)}
+                  className="text-muted-foreground hover:text-primary transition-smooth py-2 cursor-pointer"
+                  onClick={(e) => {
+                    handleNavClick(item.href, e);
+                    setIsMenuOpen(false);
+                  }}
                 >
                   {item.name}
                 </a>
               ))}
               <div className="flex flex-col gap-2 pt-4 border-t border-border">
-                <Button variant="ghost" className="justify-start">
+                <Button 
+                  variant="ghost" 
+                  className="justify-start"
+                  onClick={() => window.location.href = '/dashboard'}
+                >
                   <User className="w-4 h-4" />
                   Login
                 </Button>
-                <Button variant="cta">
+                <Button 
+                  variant="cta"
+                  onClick={() => window.location.href = '/register'}
+                >
                   Start Free Trial
                 </Button>
               </div>

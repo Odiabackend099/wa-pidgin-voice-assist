@@ -35,11 +35,24 @@ const HeroSection = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <Button variant="hero" size="lg" className="text-lg px-8 py-6">
+              <Button 
+                variant="hero" 
+                size="lg" 
+                className="text-lg px-8 py-6"
+                onClick={() => window.location.href = '/register'}
+              >
                 <MessageCircle className="w-5 h-5" />
                 Start Free Trial
               </Button>
-              <Button variant="outline" size="lg" className="text-lg px-8 py-6">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="text-lg px-8 py-6"
+                onClick={() => {
+                  const demoSection = document.querySelector('#demo');
+                  demoSection?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
                 <Volume2 className="w-5 h-5" />
                 Try Voice Demo
               </Button>

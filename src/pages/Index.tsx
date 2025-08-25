@@ -13,12 +13,20 @@ const Index = () => {
       <Header />
       <main>
         <HeroSection />
-        <LaunchReadiness />
-        <TTSDemo />
+        <section id="features">
+          <LaunchReadiness />
+        </section>
+        <section id="demo">
+          <TTSDemo />
+        </section>
         <WhatsAppQR />
-        <PricingSection />
+        <section id="pricing">
+          <PricingSection />
+        </section>
       </main>
-      <Footer />
+      <section id="support">
+        <Footer />
+      </section>
     </div>
   );
 };
