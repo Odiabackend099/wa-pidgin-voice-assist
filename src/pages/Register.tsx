@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Smartphone, User, Building, Globe, ArrowRight, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { registerUser } from '@/lib/api';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -58,17 +59,25 @@ const Register = () => {
     setIsSubmitting(true);
     
     try {
-      // TODO: Replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Register user with real API
+      const result = await registerUser({
+        businessName: formData.businessName,
+        email: formData.email,
+        whatsappNumber: formData.whatsappNumber,
+        language: formData.language,
+        businessType: formData.businessType
+      });
       
-      // Store user data
-      localStorage.setItem('userRegistration', JSON.stringify(formData));
-      
-      // Navigate to WhatsApp connection
-      navigate('/connect-whatsapp');
+      if (result.success) {
+        // Store user data for navigation
+        localStorage.setItem('currentUser', JSON.stringify(result.user));
+        
+        // Navigate to WhatsApp connection
+        navigate('/connect-whatsapp');
+      }
     } catch (error) {
       console.error('Registration error:', error);
-      setErrors({ general: 'Registration failed. Please try again.' });
+      setErrors({ general: error instanceof Error ? error.message : 'Registration failed. Please try again.' });
     } finally {
       setIsSubmitting(false);
     }

@@ -19,6 +19,7 @@ export type Database = {
           ai_response: string
           created_at: string | null
           id: string
+          language_used: string | null
           user_id: string | null
           user_message: string
         }
@@ -26,6 +27,7 @@ export type Database = {
           ai_response: string
           created_at?: string | null
           id?: string
+          language_used?: string | null
           user_id?: string | null
           user_message: string
         }
@@ -33,6 +35,7 @@ export type Database = {
           ai_response?: string
           created_at?: string | null
           id?: string
+          language_used?: string | null
           user_id?: string | null
           user_message?: string
         }
@@ -50,8 +53,10 @@ export type Database = {
         Row: {
           business_name: string
           created_at: string | null
+          email: string | null
           id: string
           language_pref: string | null
+          last_active: string | null
           plan: string | null
           trial_remaining: number | null
           whatsapp_number: string
@@ -59,8 +64,10 @@ export type Database = {
         Insert: {
           business_name: string
           created_at?: string | null
+          email?: string | null
           id?: string
           language_pref?: string | null
+          last_active?: string | null
           plan?: string | null
           trial_remaining?: number | null
           whatsapp_number: string
@@ -68,8 +75,10 @@ export type Database = {
         Update: {
           business_name?: string
           created_at?: string | null
+          email?: string | null
           id?: string
           language_pref?: string | null
+          last_active?: string | null
           plan?: string | null
           trial_remaining?: number | null
           whatsapp_number?: string

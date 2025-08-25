@@ -19,6 +19,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { supabase } from '@/integrations/supabase/client';
 
 interface AdminStats {
   totalUsers: number;
@@ -223,58 +224,72 @@ const AdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    // Mock data - replace with actual API calls
-    setTimeout(() => {
+    loadAdminData();
+  }, []);
+
+  const loadAdminData = async () => {
+    try {
+      // Get real user data from database
+      const { data: usersData, error } = await supabase
+        .from('users')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      // Transform data for admin UI
+      const transformedUsers = usersData.map(user => ({
+        id: user.id,
+        business_name: user.business_name,
+        email: user.email || 'Not provided',
+        whatsapp_number: user.whatsapp_number,
+        plan: user.plan as 'trial' | 'starter' | 'professional' | 'enterprise',
+        status: 'active' as const,
+        created_at: user.created_at,
+        last_active: user.last_active || user.created_at,
+        monthly_usage: 60 - user.trial_remaining, // Messages used
+        total_spent: user.plan === 'trial' ? 0 : 15000 // Mock revenue
+      }));
+
+      setUsers(transformedUsers);
+
+      // Calculate real stats
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const activeUsers = transformedUsers.filter(user => 
+        new Date(user.last_active) >= today
+      ).length;
+
+      const paidUsers = transformedUsers.filter(user => user.plan !== 'trial');
+      const revenue = paidUsers.length * 15000; // Average revenue calculation
+      
+      const totalMessages = transformedUsers.reduce((sum, user) => 
+        sum + user.monthly_usage, 0
+      );
+
       setStats({
-        totalUsers: 1247,
-        activeUsers: 892,
-        totalRevenue: 18750000, // ₦18.75M
-        monthlyMessages: 45623,
-        systemHealth: 'healthy'
+        totalUsers: transformedUsers.length,
+        activeUsers,
+        totalRevenue: revenue,
+        monthlyMessages: totalMessages,
+        systemHealth: 'healthy' as const
       });
 
-      setUsers([
-        {
-          id: '1',
-          business_name: 'Lagos Food Express',
-          email: 'contact@lagosexpres.com',
-          whatsapp_number: '+2348012345678',
-          plan: 'professional',
-          status: 'active',
-          created_at: '2024-01-15',
-          last_active: '2024-01-24',
-          monthly_usage: 2340,
-          total_spent: 45000
-        },
-        {
-          id: '2',
-          business_name: 'Abuja Tech Solutions',
-          email: 'admin@abujatech.ng',
-          whatsapp_number: '+2349087654321',
-          plan: 'enterprise',
-          status: 'active',
-          created_at: '2023-11-20',
-          last_active: '2024-01-24',
-          monthly_usage: 8900,
-          total_spent: 225000
-        },
-        {
-          id: '3',
-          business_name: 'Port Harcourt Retail',
-          email: 'info@phretail.com',
-          whatsapp_number: '+2347012345678',
-          plan: 'starter',
-          status: 'active',
-          created_at: '2024-01-10',
-          last_active: '2024-01-23',
-          monthly_usage: 567,
-          total_spent: 15000
-        }
-      ]);
-
       setLoading(false);
-    }, 1000);
-  }, []);
+    } catch (error) {
+      console.error('Failed to load admin data:', error);
+      // Fallback to demo data
+      setStats({
+        totalUsers: 0,
+        activeUsers: 0,
+        totalRevenue: 0,
+        monthlyMessages: 0,
+        systemHealth: 'warning' as const
+      });
+      setUsers([]);
+      setLoading(false);
+    }
+  };
 
   const filteredUsers = users.filter(user =>
     user.business_name.toLowerCase().includes(searchTerm.toLowerCase()) ||

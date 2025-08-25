@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { getDashboardData } from '@/lib/api';
+import { supabase } from '@/integrations/supabase/client';
 
 interface User {
   id: string;
@@ -139,46 +141,73 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Mock data - replace with actual API calls
-    setTimeout(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      // Try to get user from localStorage first (for demo)
+      const storedUser = localStorage.getItem('currentUser');
+      let userId = null;
+      
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        userId = user.id;
+      } else {
+        // For demo, use the first user in the database
+        const { data } = await supabase.from('users').select('id').limit(1).single();
+        userId = data?.id;
+      }
+
+      if (userId) {
+        const dashboardData = await getDashboardData(userId);
+        
+        setUser({
+          ...dashboardData.user,
+          plan: dashboardData.user.plan as 'trial' | 'starter' | 'professional' | 'enterprise'
+        });
+        
+        setStats({
+          monthlyMessages: dashboardData.stats.thisMonth,
+          totalConversations: dashboardData.stats.totalConversations,
+          averageResponseTime: dashboardData.stats.averageResponseTime,
+          satisfactionRate: 4.8 // Mock for MVP
+        });
+
+        // Transform conversations for UI
+        const transformedConversations = dashboardData.conversations.map(conv => ({
+          id: conv.id,
+          customer_name: `Customer ${conv.id.slice(0, 8)}`,
+          last_message: conv.user_message,
+          timestamp: conv.created_at,
+          status: 'resolved' as const,
+          language: conv.language_used as 'en' | 'pcm' | 'yo' | 'ig'
+        }));
+        
+        setConversations(transformedConversations);
+      }
+      
+      setLoading(false);
+    } catch (error) {
+      console.error('Failed to load dashboard:', error);
+      // Load demo data on error
       setUser({
-        id: '1',
+        id: 'demo',
         business_name: 'Demo Business',
         plan: 'trial',
         trial_remaining: 45,
         whatsapp_number: '+234...1234',
         email: 'demo@business.com'
       });
-
       setStats({
-        monthlyMessages: 156,
-        totalConversations: 23,
+        monthlyMessages: 12,
+        totalConversations: 3,
         averageResponseTime: 1.2,
         satisfactionRate: 4.8
       });
-
-      setConversations([
-        {
-          id: '1',
-          customer_name: 'Adebayo Johnson',
-          last_message: 'Thank you for the quick response!',
-          timestamp: new Date().toISOString(),
-          status: 'resolved',
-          language: 'en'
-        },
-        {
-          id: '2',
-          customer_name: 'Chioma Okafor',
-          last_message: 'I need help with my order',
-          timestamp: new Date(Date.now() - 3600000).toISOString(),
-          status: 'active',
-          language: 'ig'
-        }
-      ]);
-
       setLoading(false);
-    }, 1000);
-  }, []);
+    }
+  };
 
   if (loading) {
     return (
